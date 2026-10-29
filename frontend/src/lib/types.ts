@@ -72,7 +72,8 @@ export interface KeyMoment {
 
 export interface Review {
   schema_version: number;
-  game: { url: string | null; date: string | null; result: string; time_control: string | null };
+  game: { url: string | null; date: string | null; result: string; time_control: string | null;
+          termination?: string | null };
   engine: string;
   depth: number;
   opening: { eco: string; name: string; ply: number } | null;

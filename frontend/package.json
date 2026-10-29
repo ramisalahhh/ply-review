@@ -5,8 +5,12 @@
   "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
+    "engine": "node scripts/copy-engine.mjs",
+    "predev": "npm run engine",
+    "prebuild": "npm run engine",
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "postbuild": "node scripts/spa-fallback.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint ."
@@ -16,7 +20,8 @@
     "react": "^19.3.1",
     "react-chessboard": "^5.12.1",
     "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.5"
+    "react-router-dom": "^7.18.5",
+    "stockfish": "^19.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

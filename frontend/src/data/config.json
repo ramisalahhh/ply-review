@@ -1,0 +1,77 @@
+{
+ "classification": {
+  "excellent": 0.02,
+  "good": 0.05,
+  "inaccuracy": 0.1,
+  "mistake": 0.2,
+  "great_gap": 0.15,
+  "great_exclude_recaptures": true,
+  "brilliant_max_loss": 0.02,
+  "brilliant_min_sacrifice": 2,
+  "brilliant_min_ep_after": 0.4,
+  "decided_threshold": 0.9,
+  "miss_opponent_gain": 0.1,
+  "miss_given_back": 0.1
+ },
+ "accuracy": {
+  "window_min": 2,
+  "window_max": 8
+ },
+ "rating": {
+  "curve": [
+   [
+    0.0,
+    100.0
+   ],
+   [
+    40.0,
+    200.0
+   ],
+   [
+    55.0,
+    400.0
+   ],
+   [
+    65.0,
+    700.0
+   ],
+   [
+    72.0,
+    1000.0
+   ],
+   [
+    78.0,
+    1300.0
+   ],
+   [
+    83.0,
+    1600.0
+   ],
+   [
+    87.0,
+    1900.0
+   ],
+   [
+    90.0,
+    2200.0
+   ],
+   [
+    93.0,
+    2500.0
+   ],
+   [
+    96.0,
+    2800.0
+   ],
+   [
+    100.0,
+    3200.0
+   ]
+  ],
+  "full_weight_moves": 20
+ },
+ "report": {
+  "key_moments": 5,
+  "variation_plies": 8
+ }
+}

@@ -20,23 +20,34 @@ export default function Analyzing() {
   const [p, setP] = useState<Progress | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => api.subscribe(jobId, (e) => {
+    if (e.type === "progress") setP(e);
+    else if (e.type === "done") navigate(`/review/${e.review_id}${search}`, { replace: true });
+    else if (e.type === "cancelled") setError("Analysis cancelled");
+    else setError(e.error);
+  }), [jobId, navigate, search]);
+
+  // Phones pause background tabs and sleep the screen; keep it awake while analysing.
   useEffect(() => {
-    const es = new EventSource(api.eventsUrl(jobId));
-    es.addEventListener("progress", (e) => setP(JSON.parse((e as MessageEvent).data)));
-    es.addEventListener("done", (e) => {
-      es.close();
-      navigate(`/review/${JSON.parse((e as MessageEvent).data).review_id}${search}`, { replace: true });
-    });
-    for (const name of ["error", "cancelled"]) {
-      es.addEventListener(name, (e) => {
-        const data = (e as MessageEvent).data;
-        if (!data) return; // a transport error; EventSource reconnects by itself
-        es.close();
-        setError(JSON.parse(data).error ?? `Analysis ${name}`);
-      });
-    }
-    return () => es.close();
-  }, [jobId, navigate, search]);
+    let lock: WakeLockSentinel | null = null;
+    let released = false;
+    const acquire = () => {
+      navigator.wakeLock?.request("screen").then((l) => {
+        if (released) void l.release();
+        else lock = l;
+      }, () => { /* not supported or refused: analysis still works */ });
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible" && !released) acquire();
+    };
+    acquire();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      released = true;
+      document.removeEventListener("visibilitychange", onVisible);
+      void lock?.release();
+    };
+  }, []);
 
   const pct = p && p.total ? Math.round((100 * p.done) / p.total) : 0;
 
@@ -44,6 +55,7 @@ export default function Analyzing() {
     <div className="mx-auto max-w-md space-y-4 text-center">
       <div className="card space-y-4 p-6">
         <h1 className="text-lg font-semibold">Analysing with Stockfish</h1>
+        <p className="-mt-2 text-xs text-slate-500">Running in your browser. Keep this tab open.</p>
         <div className="mx-auto w-56">
           <Chessboard options={{
             id: "progress",

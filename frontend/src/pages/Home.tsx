@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import EngineSettingsPicker from "../components/EngineSettingsPicker";
 import { api } from "../lib/api";
 import type { GameSummary } from "../lib/types";
 
@@ -72,7 +73,8 @@ export default function Home() {
       <section className="card p-6">
         <h1 className="text-2xl font-semibold tracking-tight">Review your games</h1>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Enter a chess.com username to see recent games. Every move is checked with Stockfish.
+          Enter a chess.com username to see recent games. Every move is checked with Stockfish,
+          right here in your browser.
         </p>
         <form className="mt-4 flex gap-2" onSubmit={(e) => { e.preventDefault(); void load(); }}>
           <input
@@ -88,6 +90,9 @@ export default function Home() {
             {loading ? "Loading…" : "Show games"}
           </button>
         </form>
+        <div className="mt-4">
+          <EngineSettingsPicker onChange={() => { if (games) void load(); }} />
+        </div>
         <button className="mt-3 text-xs text-slate-500 underline-offset-2 hover:underline"
                 onClick={() => setShowPgn((v) => !v)}>
           {showPgn ? "Hide PGN" : "Or paste a PGN"}

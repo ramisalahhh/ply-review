@@ -39,7 +39,7 @@ classification:
   brilliant_max_loss: 0.02     # brilliant move may lose at most this much
   brilliant_min_sacrifice: 2   # material given up (pawn=1, minor=3, exchange=2)
   brilliant_min_ep_after: 0.40 # not brilliant if the mover is worse than this after
-  decided_threshold: 0.95      # EP at or above this = already completely winning
+  decided_threshold: 0.90      # EP at or above this = already completely winning (~ +6 pawns)
   miss_opponent_gain: 0.10     # opponent's error must have given me at least this
   miss_given_back: 0.10        # and I gave back at least this without blundering
 

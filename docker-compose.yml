@@ -1,6 +1,17 @@
-# docker compose up --build   ->  http://localhost:8080
+# Website (Stockfish runs in the browser):   docker compose up --build   -> http://localhost:8080
+# Also the Python API (server-side Stockfish): docker compose --profile api up --build
+#                                              -> http://localhost:8000/docs
 services:
-  backend:
+  web:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - "${PORT:-8080}:80"
+    restart: unless-stopped
+
+  api:
+    profiles: [api]
     build:
       context: .
       dockerfile: docker/backend.Dockerfile
@@ -9,20 +20,11 @@ services:
       PLYREVIEW__CHESSCOM__CONTACT: ${CHESSCOM_CONTACT:-}
       PLYREVIEW__ENGINE__THREADS: ${ENGINE_THREADS:-4}
       PLYREVIEW__ENGINE__DEPTH: ${ENGINE_DEPTH:-18}
+    ports:
+      - "${API_PORT:-8000}:8000"
     volumes:
       - ./config.yaml:/app/config.yaml:ro   # edit thresholds without rebuilding
       - plyreview-data:/data                 # cache, reviews database, exports
-    restart: unless-stopped
-
-  frontend:
-    build:
-      context: .
-      dockerfile: docker/frontend.Dockerfile
-    ports:
-      - "${PORT:-8080}:80"
-    depends_on:
-      backend:
-        condition: service_healthy
     restart: unless-stopped
 
 volumes:

@@ -11,3 +11,4 @@ calibration.yaml
 node_modules/
 dist/
 *.tsbuildinfo
+frontend/public/engine/

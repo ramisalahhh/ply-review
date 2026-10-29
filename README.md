@@ -12,19 +12,40 @@ arrows and engine lines.
 > Accuracy and classifications are an open approximation and will not match
 > chess.com's numbers exactly.
 
-## Quick start (Docker)
+## Use it
+
+**Website: https://ramisalahhh.github.io/ply-review/**
+
+Enter a chess.com username, pick a game, and the review runs **in your browser**:
+nothing to install, no account, no server. Your games come straight from
+chess.com, Stockfish 19 runs inside the page, and finished reviews are saved on
+your device, so a game is never analysed twice.
+
+- **Strength:** Fast / Normal / Deep (depth 12 / 16 / 18, with a time cap per
+  position). Phones default to Fast.
+- **Speed:** several Stockfish workers analyse different positions at once. A
+  typical 40-move game takes 10-30 seconds on a laptop at Normal, and longer on
+  phones. `/engine-test` measures your device.
+- **Privacy:** game data goes from chess.com to your browser and stays there.
+
+## Run your own copy
+
+**Website** (the same static site, served by nginx):
 
 ```bash
-cp .env.example .env          # set CHESSCOM_CONTACT to your email
-docker compose up --build
+docker compose up --build            # http://localhost:8080
 ```
 
-Open http://localhost:8080, enter a chess.com username, pick a game.
-Stockfish 19 is downloaded into the image during the build.
+**Website for development:**
 
-## Local development
+```bash
+cd frontend && npm install && npm run dev   # http://localhost:5173
+```
 
-Requirements: Python 3.11+, Node 20+, a Stockfish binary
+**Python tools.** These run full-size native Stockfish and add a command line,
+annotated PGN export, an HTTP API and calibration.
+
+Requirements: Python 3.11+ and a Stockfish binary
 ([official downloads](https://stockfishchess.org/download/)).
 
 ```bash
@@ -35,50 +56,60 @@ python -m venv .venv
 review games <username>                  # list recent games
 review analyze <username> 1              # review the newest game in the terminal
 review serve                             # API on http://127.0.0.1:8000 (docs at /docs)
-
-cd frontend && npm install && npm run dev   # UI on http://localhost:5173
 ```
 
 `review analyze` writes `output/<game>_review.json` and
-`output/<game>_annotated.pgn` (NAGs, `[%eval]`, `[%clk]`, engine lines as
-variations; opens in any chess GUI).
+`output/<game>_annotated.pgn`, with NAGs, `[%eval]`, `[%clk]` and engine lines as
+variations. The PGN opens in any chess GUI.
 
-Tests: `pytest` (backend) and `cd frontend && npm test` (UI).
+The API also runs in Docker: `docker compose --profile api up --build`.
+
+Tests: `pytest` (backend) and `cd frontend && npm test` (website).
 
 ## Configuration
 
-Everything tunable is in [`config.yaml`](config.yaml): engine depth, threads,
-hash, MultiPV, a per-position time cap, every classification threshold, the
-accuracy window and the rating curve.
+Everything tunable is in [`config.yaml`](config.yaml): engine settings, every
+classification threshold, the accuracy window and the rating curve. The website
+uses the same thresholds. After changing them, run:
 
-Any key can be overridden with an environment variable:
-`PLYREVIEW__ENGINE__DEPTH=20`, `PLYREVIEW__ENGINE__PATH=stockfish`, and so on.
-`PLYREVIEW_CONFIG` points at a different config file.
+```bash
+python scripts/export_web_data.py
+```
+
+This copies the thresholds and the opening book into `frontend/`. CI fails if
+this step is forgotten.
+
+For the Python tools, any key can be overridden with an environment variable,
+for example `PLYREVIEW__ENGINE__DEPTH=20`. `PLYREVIEW_CONFIG` points at a
+different config file.
 
 ## Architecture
 
 ```
-chess.com API ──> backend/fetch ──> backend/engine ──> backend/analysis ──> backend/report
-  (archives,        (client, cache,   (Stockfish UCI,     (win prob, classes,   (JSON, PGN,
-   monthly games)    429 backoff)      MultiPV, jobs)      accuracy, rating)     terminal)
-                                             │
-                                    backend/api (FastAPI, SSE, SQLite) <── frontend (React)
+Website (frontend/, runs entirely in the browser)
+  lib/chesscom.ts ──> engine/ (Stockfish 19 Lite WASM, worker pool) ──> analysis/ ──> pages/
+  (games from chess.com,  (MultiPV 2, depth/time limits,                (classes,       (board, eval bar,
+   IndexedDB cache)        several workers in parallel)                  accuracy, ...)  graph, best lines)
+
+Python (backend/): the same analysis with native Stockfish
+  fetch ──> engine ──> analysis ──> report (JSON, PGN, terminal) / api (FastAPI, SSE, SQLite)
 ```
 
 | Folder | What it does |
 |---|---|
-| `backend/fetch` | chess.com client: one request at a time, descriptive User-Agent, retries with backoff on 429/5xx (honours `Retry-After`), ETag revalidation, on-disk cache (past months never refetched) |
-| `backend/engine` | Stockfish wrapper (MultiPV = 2) and background jobs with progress events |
+| `frontend/src/engine` | Stockfish in Web Workers: UCI client, parallel pool, strength presets |
+| `frontend/src/analysis` | TypeScript port of the analysis. Tests check that it gives **the same results as the Python code** on the same engine output |
+| `frontend/src/lib` | chess.com client, local review store (IndexedDB), the review service the pages use |
+| `backend/fetch` | chess.com client: one request at a time, descriptive User-Agent, retries with backoff on 429/5xx (honours `Retry-After`), on-disk cache (past months never refetched) |
+| `backend/engine` | Native Stockfish wrapper (MultiPV = 2) and background jobs with progress events |
 | `backend/analysis` | Win probability, classification, sacrifice detection, opening book, accuracy, rating, key moments |
 | `backend/report` | Review JSON schema, annotated PGN, terminal tables |
 | `backend/api` | FastAPI app, analysis service, SQLite review store |
-| `frontend` | React + TypeScript + Vite + Tailwind; react-chessboard for the board, chess.js for engine lines |
-| `scripts/calibrate.py` | Compare our results with chess.com's Game Review and tune thresholds |
+| `scripts/` | `export_web_data.py` (config, book and test data for the website), `calibrate.py` |
 
-Each position is searched once. Engine evaluations are cached per game and
-engine setting, and reviews are stored by game + engine setting + a hash of the
-classification config. Changing a threshold rebuilds reviews from the cached
-evaluations in under a second, without running Stockfish again.
+Each position is searched once. Reviews are keyed by game, engine setting and a
+hash of the classification config, so changing a threshold produces a new review
+instead of silently mixing old and new labels.
 
 ## How the numbers work
 
@@ -106,8 +137,8 @@ Checked in this order; the first match wins. All numbers are in `config.yaml`.
 | Class | Rule (defaults) |
 |---|---|
 | Book | The position after the move is in the opening book (Lichess chess-openings, CC0; transpositions count; first 30 plies). An optional Polyglot book can be added. |
-| Brilliant | Loses ≤ 0.02 EP **and** gives up ≥ 2 points of material (static exchange evaluation after the move: piece left en prise, exchange sacrifice, Bxf7+ Kxf7 …), **and** the mover was not already ≥ 0.95 EP, **and** is ≥ 0.40 EP afterwards |
-| Great | The engine's top move, with line 1 at least 0.15 EP better than line 2; not when line 2 is still ≥ 0.95 (already winning anyway) or line 1 ≤ 0.05; plain recaptures excluded |
+| Brilliant | Loses ≤ 0.02 EP **and** gives up ≥ 2 points of material (static exchange evaluation after the move: piece left en prise, exchange sacrifice, Bxf7+ Kxf7 …), **and** the mover was not already ≥ 0.90 EP (about +6 pawns), **and** is ≥ 0.40 EP afterwards |
+| Great | The engine's top move, with line 1 at least 0.15 EP better than line 2; not when line 2 is still ≥ 0.90 (already winning anyway) or line 1 ≤ 0.10; plain recaptures excluded |
 | Miss | The opponent's previous move lost ≥ 0.10 EP, and this move gives back ≥ 0.10 EP without being a Blunder |
 | Best | The engine's top move |
 | Excellent / Good / Inaccuracy / Mistake / Blunder | EP lost ≤ 0.02 / ≤ 0.05 / ≤ 0.10 / ≤ 0.20 / > 0.20 |
@@ -145,22 +176,20 @@ The script reports accuracy and rating differences, per-class count errors,
 per-move label agreement and the most common disagreements. `--search` also
 grid-searches the loss thresholds and prints the set that agrees best.
 
-## Deploying for other people
+## Publishing your own website
 
-`docker compose up` is meant for one person or a small group on their own
-machine or server. Before putting it on the public internet, add:
-
-- **Rate limiting** per IP on `POST /api/analyses`. Each analysis uses
-  `engine.threads` CPU cores for one to four minutes, and jobs run
-  `engine.max_concurrent_jobs` at a time.
-- **A reverse proxy with HTTPS** in front of port 8080.
-- **The chess.com contact:** a real `CHESSCOM_CONTACT` value, as chess.com asks
-  of API clients.
+The `Website` workflow (`.github/workflows/pages.yml`) builds the site and
+publishes it to GitHub Pages on every push to `main`. In a fork, enable it once
+under **Settings → Pages → Source: GitHub Actions**. The site then appears at
+`https://<user>.github.io/<repo>/`. There is no server to pay for or protect,
+because every visitor's own device does the analysis.
 
 ## Licenses and credits
 
-- [Stockfish](https://stockfishchess.org/) (GPL-3.0) runs as a separate process.
-  The Docker image downloads the official release binary.
+- [Stockfish](https://stockfishchess.org/) (GPL-3.0). The website uses the
+  [stockfish.js](https://github.com/nmrugg/stockfish.js) WebAssembly build
+  (Stockfish 19 Lite). The Python tools run the official native binary, which the
+  API Docker image downloads.
 - [python-chess](https://github.com/niklasf/python-chess) (GPL-3.0+).
 - Opening names: [lichess-org/chess-openings](https://github.com/lichess-org/chess-openings) (CC0).
 - Accuracy formula: [Lichess](https://lichess.org/page/accuracy) (the algorithm is reimplemented here).

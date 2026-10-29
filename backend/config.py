@@ -48,7 +48,7 @@ class ClassificationConfig(BaseModel):
     brilliant_max_loss: float = 0.02
     brilliant_min_sacrifice: int = 2
     brilliant_min_ep_after: float = 0.40
-    decided_threshold: float = 0.95
+    decided_threshold: float = 0.90
     miss_opponent_gain: float = 0.10
     miss_given_back: float = 0.10
 

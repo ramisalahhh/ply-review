@@ -141,3 +141,9 @@ def test_see_defended_pawn():
     assert see(b, chess.D5) == 0
     b = chess.Board("4k3/8/8/3p4/8/8/8/3QK3 w - - 0 1")
     assert see(b, chess.D5) == 1
+
+
+def test_no_brilliant_when_already_far_ahead():
+    # ~+6.5 pawns (EP 0.92): a "sacrifice" here is just converting a won game
+    p = ply(fen=GREEK_GIFT, uci="d3h7", ep_best=0.92, ep_second=0.91)
+    assert cls(p) == Cls.BEST

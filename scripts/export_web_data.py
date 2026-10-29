@@ -13,6 +13,7 @@ Writes:
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -77,13 +78,31 @@ def outputs(cfg: Config) -> dict[Path, str]:
     return {p: s + "\n" for p, s in files.items()}
 
 
+def same_data(a, b) -> bool:
+    """JSON equality, allowing last-digit float noise (exp() differs slightly by OS)."""
+    if isinstance(a, float) or isinstance(b, float):
+        return (isinstance(a, int | float) and isinstance(b, int | float)
+                and math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-12))
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(same_data(a[k], b[k]) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(same_data(x, y) for x, y in zip(a, b, strict=True))
+    return a == b
+
+
+def up_to_date(path: Path, text: str) -> bool:
+    if not path.exists():
+        return False
+    current = path.read_text(encoding="utf-8")
+    return current == text or same_data(json.loads(current), json.loads(text))
+
+
 @app.command()
 def main(check: bool = typer.Option(False, help="Only verify the files are up to date")):
     cfg = load_config(ROOT / "config.yaml")
     stale = []
     for path, text in outputs(cfg).items():
-        current = path.read_text(encoding="utf-8") if path.exists() else None
-        if current == text:
+        if up_to_date(path, text):
             continue
         stale.append(path.relative_to(ROOT))
         if not check:

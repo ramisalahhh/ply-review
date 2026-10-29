@@ -1,0 +1,4 @@
+# Keep Unix line endings so Dockerfiles and shell steps work on every OS
+* text=auto eol=lf
+*.png binary
+*.ico binary

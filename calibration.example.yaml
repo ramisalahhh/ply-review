@@ -1,0 +1,16 @@
+# Copy to calibration.yaml and fill in what chess.com's Game Review showed you.
+# Everything except `url` is optional; the more you enter, the better the fit.
+username: ramisalahh
+games:
+  - url: https://www.chess.com/game/live/186086108136
+    accuracy: {me: 55.0, opponent: 60.0}
+    game_rating: {me: 400, opponent: 500}
+    counts:
+      me:       {brilliant: 0, great: 0, best: 5, excellent: 3, good: 2, book: 3,
+                 inaccuracy: 1, mistake: 2, miss: 1, blunder: 3}
+      opponent: {brilliant: 0, great: 1, best: 8, excellent: 2, good: 1, book: 3,
+                 inaccuracy: 1, mistake: 1, miss: 1, blunder: 1}
+    # Per-move labels, by move as shown in the move list (strongest signal for tuning)
+    moves:
+      "7...d6": mistake
+      "8...O-O": blunder

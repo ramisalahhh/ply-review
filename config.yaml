@@ -1,0 +1,77 @@
+# Ply Review configuration. Every tunable lives here.
+# Paths are relative to this file unless absolute.
+
+chesscom:
+  # chess.com asks API clients to identify themselves. Put an email or URL
+  # here so they can reach you if your client misbehaves.
+  contact: ""
+  timeout_seconds: 20
+  max_retries: 5
+  backoff_base_seconds: 1.0   # 1, 2, 4, 8, ... plus jitter (Retry-After wins if sent)
+  backoff_max_seconds: 60
+  current_month_ttl_seconds: 600   # past months are cached forever
+  archives_ttl_seconds: 3600
+
+storage:
+  cache_dir: .cache/chesscom
+  reviews_db: .cache/reviews.sqlite3
+  output_dir: output
+
+engine:
+  # Absolute, relative to this file, or a command on PATH (e.g. "stockfish" in Docker)
+  path: engines/sf_19/stockfish/stockfish-windows-x86-64-universal.exe
+  depth: 18
+  threads: 4
+  hash_mb: 256
+  multipv: 2
+  max_concurrent_jobs: 1   # games analysed at the same time (each uses `threads`)
+  max_seconds_per_position: 5  # stop early on very slow positions (0 = always reach `depth`)
+
+classification:
+  # Expected points lost (0-1) upper bounds
+  excellent: 0.02
+  good: 0.05
+  inaccuracy: 0.10
+  mistake: 0.20
+  # anything above `mistake` is a blunder
+  great_gap: 0.15              # EP gap between engine line 1 and line 2
+  great_exclude_recaptures: true
+  brilliant_max_loss: 0.02     # brilliant move may lose at most this much
+  brilliant_min_sacrifice: 2   # material given up (pawn=1, minor=3, exchange=2)
+  brilliant_min_ep_after: 0.40 # not brilliant if the mover is worse than this after
+  decided_threshold: 0.95      # EP at or above this = already completely winning
+  miss_opponent_gain: 0.10     # opponent's error must have given me at least this
+  miss_given_back: 0.10        # and I gave back at least this without blundering
+
+opening:
+  polyglot_book: ""   # optional .bin book; adds to the built-in ECO book
+
+accuracy:
+  window_min: 2
+  window_max: 8
+
+rating:
+  # accuracy % -> estimated rating, linear between points. Tune with scripts/calibrate.py
+  curve:
+    - [0, 100]
+    - [40, 200]
+    - [55, 400]
+    - [65, 700]
+    - [72, 1000]
+    - [78, 1300]
+    - [83, 1600]
+    - [87, 1900]
+    - [90, 2200]
+    - [93, 2500]
+    - [96, 2800]
+    - [100, 3200]
+  full_weight_moves: 20   # games shorter than this lean toward the player's real rating
+
+report:
+  key_moments: 5        # biggest swings listed (brilliant moves are always added)
+  variation_plies: 8    # engine line length in the annotated PGN
+
+api:
+  host: 127.0.0.1
+  port: 8000
+  cors_origins: ["http://localhost:5173", "http://127.0.0.1:5173"]   # Vite dev server

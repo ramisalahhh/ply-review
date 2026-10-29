@@ -1,0 +1,29 @@
+# docker compose up --build   ->  http://localhost:8080
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      # chess.com asks API clients for a contact; set it in .env (see .env.example)
+      PLYREVIEW__CHESSCOM__CONTACT: ${CHESSCOM_CONTACT:-}
+      PLYREVIEW__ENGINE__THREADS: ${ENGINE_THREADS:-4}
+      PLYREVIEW__ENGINE__DEPTH: ${ENGINE_DEPTH:-18}
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro   # edit thresholds without rebuilding
+      - plyreview-data:/data                 # cache, reviews database, exports
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - "${PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  plyreview-data:

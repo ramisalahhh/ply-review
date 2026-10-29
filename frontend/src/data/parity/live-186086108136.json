@@ -2548,8 +2548,9 @@
    "color": "white",
    "username": "yakupakbaba1",
    "rating": 424,
-   "accuracy": 72.80996644833073,
-   "game_rating": 1050,
+   "accuracy": 71.29759948519919,
+   "accuracy_raw": 72.80996644833073,
+   "game_rating": 950,
    "counts": {
     "brilliant": 0,
     "great": 2,
@@ -2567,8 +2568,9 @@
    "color": "black",
    "username": "ramisalahh",
    "rating": 387,
-   "accuracy": 60.7581809279938,
-   "game_rating": 550,
+   "accuracy": 58.17585309576505,
+   "accuracy_raw": 60.7581809279938,
+   "game_rating": 500,
    "counts": {
     "brilliant": 0,
     "great": 0,

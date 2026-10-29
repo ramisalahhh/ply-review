@@ -65,4 +65,4 @@ export function limitsFor(preset: Preset, multipv = 2): SearchLimits {
   return { depth: p.depth, movetimeMs: p.movetimeMs, multipv };
 }
 
-export const ENGINE_URL = `${import.meta.env.BASE_URL}engine/stockfish-19-lite-single.js`;
+export const ENGINE_URL = `${import.meta.env?.BASE_URL ?? "/"}engine/stockfish-19-lite-single.js`;

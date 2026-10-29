@@ -34,7 +34,8 @@ class PlayerSummary(BaseModel):
     color: str
     username: str
     rating: int | None = None
-    accuracy: float | None = None
+    accuracy: float | None = None      # fitted to chess.com (accuracy.model), else Lichess
+    accuracy_raw: float | None = None  # the plain Lichess formula
     game_rating: int | None = None
     counts: dict[str, int]
 

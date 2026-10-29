@@ -49,6 +49,13 @@ opening:
 accuracy:
   window_min: 2
   window_max: 8
+  model:   # fitted by scripts/fit_formula.py (CV MAE 4.9)
+    k: 0.03
+    p: 1.25
+    q: 0.5
+    skip_book: false
+    a: 1.41851
+    b: -46.8498
 
 rating:
   # accuracy % -> estimated rating, linear between points. Tune with scripts/calibrate.py

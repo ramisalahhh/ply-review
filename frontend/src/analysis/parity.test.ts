@@ -77,6 +77,7 @@ describe("same results as the Python backend", () => {
           expect([g.username, g.rating, g.game_rating, g.counts])
             .toEqual([w.username, w.rating, w.game_rating, w.counts]);
           close(g.accuracy, w.accuracy);
+          close(g.accuracy_raw ?? null, w.accuracy_raw ?? null);
         }
       });
 

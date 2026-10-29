@@ -76,3 +76,24 @@ def game_accuracy(white_win: list[float], white_first: bool = True, window_min: 
         harmonic = _harmonic_mean([accs[i] for i in idx])
         result[color] = (weighted + harmonic) / 2
     return result
+
+
+
+def power_mean(xs: list[float], q: float) -> float:
+    """q = 1 arithmetic, 0 geometric, -1 harmonic mean (values floored at 1)."""
+    xs = [max(x, 1.0) for x in xs]
+    if q == 0:
+        return math.exp(statistics.mean(math.log(x) for x in xs))
+    return statistics.mean(x ** q for x in xs) ** (1 / q)
+
+
+def fitted_accuracy(losses: list[float], k: float, p: float, q: float, a: float,
+                    b: float) -> float | None:
+    """Accuracy fitted to chess.com's numbers (see scripts/fit_formula.py).
+
+    losses: expected points lost per move, x 100 (0 = best move).
+    """
+    if not losses:
+        return None
+    pm = power_mean([100 * math.exp(-k * (max(0.0, d) ** p)) for d in losses], q)
+    return max(0.0, min(100.0, a * pm + b))

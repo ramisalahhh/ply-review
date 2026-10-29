@@ -16,9 +16,19 @@ export interface ClassificationConfig {
   miss_given_back: number;
 }
 
+/** Accuracy formula fitted to chess.com (scripts/fit_formula.py). */
+export interface AccuracyModel {
+  k: number;
+  p: number;
+  q: number;
+  skip_book: boolean;
+  a: number;
+  b: number;
+}
+
 export interface AnalysisConfig {
   classification: ClassificationConfig;
-  accuracy: { window_min: number; window_max: number };
+  accuracy: { window_min: number; window_max: number; model: AccuracyModel | null };
   rating: { curve: [number, number][]; full_weight_moves: number };
   report: { key_moments: number; variation_plies: number };
 }

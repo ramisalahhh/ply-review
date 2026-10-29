@@ -2974,8 +2974,9 @@
    "color": "white",
    "username": "izzoh254",
    "rating": 414,
-   "accuracy": 79.06082293233983,
-   "game_rating": 1350,
+   "accuracy": 70.35954802071387,
+   "accuracy_raw": 79.06082293233983,
+   "game_rating": 950,
    "counts": {
     "brilliant": 0,
     "great": 1,
@@ -2993,8 +2994,9 @@
    "color": "black",
    "username": "ramisalahh",
    "rating": 387,
-   "accuracy": 66.61523808996004,
-   "game_rating": 750,
+   "accuracy": 56.85535175733938,
+   "accuracy_raw": 66.61523808996004,
+   "game_rating": 450,
    "counts": {
     "brilliant": 0,
     "great": 2,

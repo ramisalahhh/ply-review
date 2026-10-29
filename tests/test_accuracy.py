@@ -144,3 +144,41 @@ def test_transposition_found():
     a = detect_opening(moves("d4 Nf6 c4 e6 Nc3 Bb4"), load_book())
     b = detect_opening(moves("c4 e6 Nc3 Nf6 d4 Bb4"), load_book())
     assert a.name == b.name and "Nimzo" in a.name
+
+
+# --- fitted (chess.com-like) accuracy ----------------------------------------
+
+from backend.analysis.accuracy import fitted_accuracy, power_mean  # noqa: E402
+
+M = dict(k=0.03, p=1.25, q=0.5, a=1.41851, b=-46.8498)
+
+
+def test_power_mean_family():
+    xs = [100.0, 25.0]
+    assert power_mean(xs, 1) == pytest.approx(62.5)
+    assert power_mean(xs, 0) == pytest.approx(50.0)
+    assert power_mean(xs, -1) == pytest.approx(40.0)
+
+
+def test_fitted_perfect_and_bounds():
+    assert fitted_accuracy([0.0] * 30, **M) == pytest.approx(min(100.0, 1.41851 * 100 - 46.8498))
+    assert fitted_accuracy([], **M) is None
+    assert 0 <= fitted_accuracy([90.0] * 10, **M) <= 100
+
+
+def test_fitted_is_gentler_than_lichess_on_one_blunder_in_a_short_game():
+    # 8 good moves and one blunder that throws away 45% winning chances
+    losses = [0.5] * 8 + [45.0]
+    fitted = fitted_accuracy(losses, **M)
+    series = [50.0]
+    for d in losses:  # White moves; Black replies perfectly
+        series += [series[-1] - d, series[-1] - d]
+    lichess = game_accuracy(series[:-1])["white"]
+    assert fitted > lichess + 10
+
+
+def test_fitted_decreases_with_bigger_losses():
+    a = fitted_accuracy([1.0] * 20, **M)
+    b = fitted_accuracy([5.0] * 20, **M)
+    c = fitted_accuracy([15.0] * 20, **M)
+    assert a > b > c

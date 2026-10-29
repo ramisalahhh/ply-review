@@ -58,3 +58,18 @@ export function gameAccuracy(whiteWin: number[], whiteFirst = true, windowMin = 
   };
   return { white: forColor(whiteFirst ? 0 : 1), black: forColor(whiteFirst ? 1 : 0) };
 }
+
+/** q = 1 arithmetic, 0 geometric, -1 harmonic mean (values floored at 1). */
+export function powerMean(xs: number[], q: number): number {
+  const v = xs.map((x) => Math.max(x, 1));
+  if (q === 0) return Math.exp(v.reduce((s, x) => s + Math.log(x), 0) / v.length);
+  return (v.reduce((s, x) => s + x ** q, 0) / v.length) ** (1 / q);
+}
+
+/** Accuracy fitted to chess.com's numbers. losses: expected points lost x 100 per move. */
+export function fittedAccuracy(losses: number[], m: { k: number; p: number; q: number;
+                                                    a: number; b: number }): number | null {
+  if (losses.length === 0) return null;
+  const pm = powerMean(losses.map((d) => 100 * Math.exp(-m.k * Math.max(0, d) ** m.p)), m.q);
+  return Math.max(0, Math.min(100, m.a * pm + m.b));
+}

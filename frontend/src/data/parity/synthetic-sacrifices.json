@@ -701,8 +701,9 @@
    "color": "white",
    "username": "w",
    "rating": null,
-   "accuracy": 86.02672678441895,
-   "game_rating": 1850,
+   "accuracy": 87.78632926128385,
+   "accuracy_raw": 86.02672678441895,
+   "game_rating": 2000,
    "counts": {
     "brilliant": 2,
     "great": 1,
@@ -720,8 +721,9 @@
    "color": "black",
    "username": "b",
    "rating": null,
-   "accuracy": 77.09358387636937,
-   "game_rating": 1250,
+   "accuracy": 93.84464650611731,
+   "accuracy_raw": 77.09358387636937,
+   "game_rating": 2600,
    "counts": {
     "brilliant": 0,
     "great": 1,

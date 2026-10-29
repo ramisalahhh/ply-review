@@ -148,6 +148,10 @@ class ChessComClient:
         return data.get("archives", [])
 
     def month_games(self, archive_url: str, refresh: bool = False) -> list[Game]:
+        return [Game.from_api(g) for g in self.month_raw(archive_url, refresh)]
+
+    def month_raw(self, archive_url: str, refresh: bool = False) -> list[dict]:
+        """The month's game objects exactly as chess.com sends them (incl. `accuracies`)."""
         m = _ARCHIVE_RE.search(archive_url)
         if not m:
             raise ChessComError(f"Unexpected archive URL: {archive_url}")
@@ -163,7 +167,7 @@ class ChessComClient:
         else:
             ttl = None
         data = self._get_json(archive_url, f"{user}/{year:04d}-{month:02d}", ttl)
-        return [Game.from_api(g) for g in data.get("games", [])]
+        return data.get("games", [])
 
     def iter_games(self, username: str, refresh: bool = False) -> Iterator[Game]:
         """Standard-chess games, newest first."""

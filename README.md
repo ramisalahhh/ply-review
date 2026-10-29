@@ -147,16 +147,40 @@ A move with only one legal option is always Best.
 
 ### Accuracy
 
-A port of the open [Lichess accuracy](https://lichess.org/page/accuracy)
-algorithm:
+chess.com does not publish its accuracy formula. Ply Review uses one **fitted to
+chess.com's own numbers**. chess.com's public API includes the accuracy of every
+game that has been reviewed. The formula was fitted on 93 such games (186
+accuracy values, ratings from about 200 to 2800), analysed with the same engine
+and settings as the website (Normal):
 
-- Per move: `103.1668 · exp(−0.04354 · (win%_before − win%_after)) − 3.1669 + 1`,
-  clamped to 0–100.
-- Per player: the average of two means:
-  - a **volatility-weighted mean**, where each move is weighted by the standard
-    deviation of win% in a sliding window (window = moves/10, between 2 and 8;
-    weight clamped to 0.5–12);
-  - a **harmonic mean**, which punishes a few very bad moves.
+```
+move score   s = 100 * exp(-0.03 * loss^1.25)        loss = expected points lost x 100
+accuracy     A = 1.419 * PowerMean_0.5(s) - 46.85     (clamped to 0-100)
+```
+
+`PowerMean_0.5` lies between an average and a geometric mean. It is gentler on
+one bad move than the harmonic mean that Lichess uses.
+
+| Formula | Typical gap from chess.com (on games the fit never saw) |
+|---|---|
+| Lichess formula | 7.6 points |
+| **Fitted formula (default)** | **4.9 points**; 63% of values within ±5 |
+
+Short games (under 30 moves) are the hardest: their typical gap is 5.7 points,
+against 4.0 for longer games. Every review also stores the plain Lichess value
+as `accuracy_raw`.
+
+To refit, for example after changing engine settings:
+
+```bash
+python scripts/collect_calibration.py                 # games + chess.com accuracies
+cd frontend && npx tsx scripts/calibrate-web.ts       # analyse them with the website engine
+cd .. && python scripts/fit_formula.py --write        # fit, save to config.yaml
+python scripts/export_web_data.py                     # update the website
+```
+
+The fitted values live under `accuracy.model` in `config.yaml`. Delete that
+block to switch back to the plain Lichess formula.
 
 ### Estimated game rating
 

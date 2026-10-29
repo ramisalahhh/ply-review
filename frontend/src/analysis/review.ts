@@ -2,7 +2,7 @@
 import { bestEval, type PositionAnalysis } from "../engine/types";
 import type { Classification, MoveReview, PlayerSummary, Review } from "../lib/types";
 import { CLASS_ORDER } from "../lib/types";
-import { gameAccuracy, perMoveAccuracies } from "./accuracy";
+import { fittedAccuracy, gameAccuracy, perMoveAccuracies } from "./accuracy";
 import { classifyPlies } from "./classify";
 import type { AnalysisConfig } from "./config";
 import { keyMoments } from "./moments";
@@ -55,8 +55,14 @@ export function buildReview(
   const whiteWin = whiteWinSeries(positions);
   const whiteFirst = game.startFen.split(" ")[1] === "w";
   const accs = perMoveAccuracies(whiteWin, whiteFirst);
-  const acc = gameAccuracy(whiteWin, whiteFirst, cfg.accuracy.window_min,
-                           cfg.accuracy.window_max);
+  const rawAcc = gameAccuracy(whiteWin, whiteFirst, cfg.accuracy.window_min,
+                              cfg.accuracy.window_max);
+  const model = cfg.accuracy.model;
+  const fitted = (color: "white" | "black") => model
+    ? fittedAccuracy(plies.filter((p, i) => p.color === color
+        && !(model.skip_book && classes[i][0] === "book")).map((p) => p.ep_loss * 100), model)
+    : rawAcc[color];
+  const acc = { white: fitted("white"), black: fitted("black") };
 
   const moves: MoveReview[] = plies.map((p, i) => ({
     ...p,
@@ -77,6 +83,7 @@ export function buildReview(
       username: h[color === "white" ? "White" : "Black"] ?? color,
       rating,
       accuracy: acc[color],
+      accuracy_raw: rawAcc[color],
       game_rating: estimateRating(acc[color], cfg.rating.curve, mine.length, rating,
                                   cfg.rating.full_weight_moves),
       counts,

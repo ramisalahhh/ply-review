@@ -52,7 +52,8 @@ export interface PlayerSummary {
   color: "white" | "black";
   username: string;
   rating: number | null;
-  accuracy: number | null;
+  accuracy: number | null;      // fitted to chess.com (accuracy.model), else Lichess
+  accuracy_raw?: number | null; // the plain Lichess formula
   game_rating: number | null;
   counts: Record<Classification, number>;
 }

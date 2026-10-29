@@ -15,7 +15,15 @@
  },
  "accuracy": {
   "window_min": 2,
-  "window_max": 8
+  "window_max": 8,
+  "model": {
+   "k": 0.03,
+   "p": 1.25,
+   "q": 0.5,
+   "skip_book": false,
+   "a": 1.41851,
+   "b": -46.8498
+  }
  },
  "rating": {
   "curve": [

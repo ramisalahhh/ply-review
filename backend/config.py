@@ -57,9 +57,21 @@ class OpeningConfig(BaseModel):
     polyglot_book: str = ""
 
 
+class AccuracyModel(BaseModel):
+    """Accuracy formula fitted to chess.com (scripts/fit_formula.py)."""
+
+    k: float
+    p: float
+    q: float
+    skip_book: bool = False
+    a: float = 1.0
+    b: float = 0.0
+
+
 class AccuracyConfig(BaseModel):
     window_min: int = 2
     window_max: int = 8
+    model: AccuracyModel | None = None  # None = plain Lichess accuracy
 
 
 DEFAULT_CURVE = [

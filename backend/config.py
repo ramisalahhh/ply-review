@@ -39,10 +39,10 @@ class EngineConfig(BaseModel):
 
 
 class ClassificationConfig(BaseModel):
-    excellent: float = 0.02
-    good: float = 0.05
-    inaccuracy: float = 0.10
-    mistake: float = 0.20
+    excellent: float = 0.0125
+    good: float = 0.04
+    inaccuracy: float = 0.08
+    mistake: float = 0.30
     great_gap: float = 0.15
     great_exclude_recaptures: bool = True
     brilliant_max_loss: float = 0.02
@@ -51,6 +51,7 @@ class ClassificationConfig(BaseModel):
     decided_threshold: float = 0.90
     miss_opponent_gain: float = 0.10
     miss_given_back: float = 0.10
+    miss_includes_blunder: bool = True
 
 
 class OpeningConfig(BaseModel):

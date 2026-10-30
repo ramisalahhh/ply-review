@@ -32,9 +32,9 @@ def cls(p, prev=None, book=False):
 
 
 @pytest.mark.parametrize("loss,expected", [
-    (0.0, Cls.EXCELLENT), (0.02, Cls.EXCELLENT), (0.021, Cls.GOOD), (0.05, Cls.GOOD),
-    (0.051, Cls.INACCURACY), (0.10, Cls.INACCURACY), (0.11, Cls.MISTAKE), (0.20, Cls.MISTAKE),
-    (0.201, Cls.BLUNDER), (0.9, Cls.BLUNDER),
+    (0.0, Cls.EXCELLENT), (0.0125, Cls.EXCELLENT), (0.013, Cls.GOOD), (0.04, Cls.GOOD),
+    (0.041, Cls.INACCURACY), (0.08, Cls.INACCURACY), (0.081, Cls.MISTAKE), (0.30, Cls.MISTAKE),
+    (0.301, Cls.BLUNDER), (0.9, Cls.BLUNDER),
 ])
 def test_loss_thresholds(loss, expected):
     assert by_loss(loss, C) == expected
@@ -46,7 +46,7 @@ def test_best_move():
 
 def test_non_best_by_loss():
     assert cls(ply(uci="d2d4", best_uci="e2e4", ep_best=0.55, ep_played=0.54)) == Cls.EXCELLENT
-    assert cls(ply(uci="g2g4", best_uci="e2e4", ep_best=0.55, ep_played=0.30)) == Cls.BLUNDER
+    assert cls(ply(uci="g2g4", best_uci="e2e4", ep_best=0.55, ep_played=0.20)) == Cls.BLUNDER
 
 
 def test_book_wins():
@@ -106,9 +106,17 @@ def test_miss_after_opponent_error():
     assert cls(mine, prev) == Cls.MISS
 
 
-def test_blunder_stays_blunder_not_miss():
+def test_blunder_sized_give_back_is_a_miss():
     prev = ply(ep_best=0.5, ep_played=0.2)
     mine = ply(uci="d2d4", best_uci="e2e4", ep_best=0.8, ep_played=0.3)
+    assert cls(mine, prev) == Cls.MISS
+    strict = ClassificationConfig(miss_includes_blunder=False)
+    assert classify_move(mine, prev, False, strict)[0] == Cls.BLUNDER
+
+
+def test_blunder_without_opponent_error_stays_blunder():
+    prev = ply(ep_best=0.5, ep_played=0.49)
+    mine = ply(uci="d2d4", best_uci="e2e4", ep_best=0.55, ep_played=0.1)
     assert cls(mine, prev) == Cls.BLUNDER
 
 

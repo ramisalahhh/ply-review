@@ -48,7 +48,9 @@ export function classifyMove(p: PlyEval, prev: PlyEval | null, inBook: boolean,
     return ["great", sac];
   }
 
-  if (prev && (base === "inaccuracy" || base === "mistake")
+  const missable = base === "inaccuracy" || base === "mistake"
+    || (c.miss_includes_blunder && base === "blunder");
+  if (prev && missable
       && prev.ep_loss >= c.miss_opponent_gain
       && p.ep_loss >= c.miss_given_back) {
     return ["miss", sac];

@@ -124,7 +124,7 @@ def test_config_change_reclassifies_without_engine(cfg, analyzers):
     with TestClient(app) as c:
         r = c.post("/api/analyses", json={"username": "ramisalahh", "game": "1"}).json()
         wait_done(c, r["job_id"])
-    cfg.classification.mistake = 0.3
+    cfg.classification.mistake = 0.25
     app2 = create_app(cfg, client=FakeClient(), make_analyzer=analyzers)
     with TestClient(app2) as c:
         r2 = c.post("/api/analyses", json={"username": "ramisalahh", "game": "1"}).json()

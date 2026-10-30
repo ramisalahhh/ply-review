@@ -3063,13 +3063,13 @@
     "brilliant": 0,
     "great": 1,
     "best": 4,
-    "excellent": 10,
-    "good": 7,
+    "excellent": 9,
+    "good": 5,
     "book": 1,
-    "inaccuracy": 1,
+    "inaccuracy": 4,
     "mistake": 0,
-    "miss": 0,
-    "blunder": 2
+    "miss": 1,
+    "blunder": 1
    }
   },
   "black": {
@@ -3083,13 +3083,13 @@
     "brilliant": 0,
     "great": 2,
     "best": 3,
-    "excellent": 11,
-    "good": 4,
+    "excellent": 9,
+    "good": 5,
     "book": 1,
-    "inaccuracy": 2,
+    "inaccuracy": 3,
     "mistake": 0,
-    "miss": 0,
-    "blunder": 2
+    "miss": 1,
+    "blunder": 1
    }
   },
   "moves": [
@@ -3232,7 +3232,7 @@
      "mate": null
     },
     "white_ep_after": 0.5165632973121441,
-    "classification": "good",
+    "classification": "inaccuracy",
     "accuracy": 81.05823286553145,
     "sacrifice": 0,
     "clock": 590.0
@@ -3472,7 +3472,7 @@
      "mate": null
     },
     "white_ep_after": 0.5257517538936253,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 94.600019761481,
     "sacrifice": 0,
     "clock": 585.7
@@ -4432,7 +4432,7 @@
      "mate": null
     },
     "white_ep_after": 0.10090987209463725,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 93.66127735014366,
     "sacrifice": 0,
     "clock": 456.9
@@ -4576,7 +4576,7 @@
      "mate": null
     },
     "white_ep_after": 0.07688776954513876,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 92.75824650397813,
     "sacrifice": 0,
     "clock": 345.8
@@ -4672,7 +4672,7 @@
      "mate": null
     },
     "white_ep_after": 0.03848883713867113,
-    "classification": "good",
+    "classification": "inaccuracy",
     "accuracy": 82.57085479236325,
     "sacrifice": 0,
     "clock": 343.2
@@ -4720,7 +4720,7 @@
      "mate": null
     },
     "white_ep_after": 0.08339914250457947,
-    "classification": "good",
+    "classification": "inaccuracy",
     "accuracy": 82.67493659155392,
     "sacrifice": 0,
     "clock": 398.2
@@ -4960,7 +4960,7 @@
      "mate": null
     },
     "white_ep_after": 0.057411737157371245,
-    "classification": "good",
+    "classification": "inaccuracy",
     "accuracy": 84.18572120353214,
     "sacrifice": 0,
     "clock": 208.2
@@ -5431,7 +5431,7 @@
      "mate": null
     },
     "white_ep_after": 0.3696073624137258,
-    "classification": "blunder",
+    "classification": "miss",
     "accuracy": 4.461424518987281,
     "sacrifice": 0,
     "clock": 155.9
@@ -5479,7 +5479,7 @@
      "mate": 1
     },
     "white_ep_after": 1.0,
-    "classification": "blunder",
+    "classification": "miss",
     "accuracy": 4.461424518987281,
     "sacrifice": 0,
     "clock": 291.0
@@ -5599,7 +5599,7 @@
     "move_number": 25,
     "color": "white",
     "san": "Qa6+",
-    "classification": "blunder",
+    "classification": "miss",
     "ep_loss": 0.6363776066437299,
     "white_win_before": 100.0,
     "white_win_after": 36.96073624137258,
@@ -5613,7 +5613,7 @@
     "move_number": 25,
     "color": "black",
     "san": "Kd8",
-    "classification": "blunder",
+    "classification": "miss",
     "ep_loss": 0.6303926375862742,
     "white_win_before": 36.96073624137258,
     "white_win_after": 100.0,

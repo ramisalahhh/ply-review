@@ -2981,13 +2981,13 @@
     "brilliant": 0,
     "great": 1,
     "best": 8,
-    "excellent": 5,
-    "good": 1,
+    "excellent": 2,
+    "good": 4,
     "book": 2,
-    "inaccuracy": 5,
-    "mistake": 0,
-    "miss": 0,
-    "blunder": 2
+    "inaccuracy": 4,
+    "mistake": 1,
+    "miss": 1,
+    "blunder": 1
    }
   },
   "black": {
@@ -3001,11 +3001,11 @@
     "brilliant": 0,
     "great": 2,
     "best": 3,
-    "excellent": 4,
-    "good": 4,
+    "excellent": 3,
+    "good": 3,
     "book": 2,
     "inaccuracy": 4,
-    "mistake": 2,
+    "mistake": 4,
     "miss": 0,
     "blunder": 2
    }
@@ -3294,7 +3294,7 @@
      "mate": null
     },
     "white_ep_after": 0.46874313267512907,
-    "classification": "inaccuracy",
+    "classification": "mistake",
     "accuracy": 72.89108259387098,
     "sacrifice": 0,
     "clock": 593.4
@@ -3486,7 +3486,7 @@
      "mate": null
     },
     "white_ep_after": 0.4513666864926168,
-    "classification": "inaccuracy",
+    "classification": "mistake",
     "accuracy": 68.50045513443362,
     "sacrifice": 0,
     "clock": 576.6
@@ -3726,7 +3726,7 @@
      "mate": null
     },
     "white_ep_after": 0.10533642481155814,
-    "classification": "blunder",
+    "classification": "miss",
     "accuracy": 40.10507023658598,
     "sacrifice": 0,
     "clock": 487.6
@@ -3966,7 +3966,7 @@
      "mate": null
     },
     "white_ep_after": 0.19970419641667098,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 100.0,
     "sacrifice": 0,
     "clock": 521.6
@@ -4206,7 +4206,7 @@
      "mate": null
     },
     "white_ep_after": 0.03598178192927293,
-    "classification": "inaccuracy",
+    "classification": "mistake",
     "accuracy": 69.49738582346751,
     "sacrifice": 1,
     "clock": 435.4
@@ -4395,7 +4395,7 @@
      "mate": null
     },
     "white_ep_after": 0.03781327431647863,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 97.70348210884518,
     "sacrifice": 0,
     "clock": 413.2
@@ -4539,7 +4539,7 @@
      "mate": null
     },
     "white_ep_after": 0.10779026169080512,
-    "classification": "good",
+    "classification": "inaccuracy",
     "accuracy": 82.81260409093252,
     "sacrifice": 0,
     "clock": 406.0
@@ -4779,7 +4779,7 @@
      "mate": null
     },
     "white_ep_after": 0.408084390675291,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 94.01429173092541,
     "sacrifice": 0,
     "clock": 357.5
@@ -4875,7 +4875,7 @@
      "mate": null
     },
     "white_ep_after": 0.45775702105393135,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 96.96906589927876,
     "sacrifice": 0,
     "clock": 353.7
@@ -5019,7 +5019,7 @@
      "mate": null
     },
     "white_ep_after": 0.9455050916144496,
-    "classification": "good",
+    "classification": "inaccuracy",
     "accuracy": 83.45845339617367,
     "sacrifice": 3,
     "clock": 264.3
@@ -5294,7 +5294,7 @@
     "move_number": 8,
     "color": "white",
     "san": "Nf6+",
-    "classification": "blunder",
+    "classification": "miss",
     "ep_loss": 0.20490061345277355,
     "white_win_before": 31.023703826433156,
     "white_win_after": 10.533642481155814,

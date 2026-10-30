@@ -14,6 +14,7 @@ export interface ClassificationConfig {
   decided_threshold: number;
   miss_opponent_gain: number;
   miss_given_back: number;
+  miss_includes_blunder: boolean;
 }
 
 /** Accuracy formula fitted to chess.com (scripts/fit_formula.py). */

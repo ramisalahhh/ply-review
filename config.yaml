@@ -28,11 +28,12 @@ engine:
   max_seconds_per_position: 5  # stop early on very slow positions (0 = always reach `depth`)
 
 classification:
-  # Expected points lost (0-1) upper bounds
-  excellent: 0.02
-  good: 0.05
-  inaccuracy: 0.10
-  mistake: 0.20
+  # Expected points lost (0-1) upper bounds, fitted to chess.com Game Review counts
+  # (13 games, scripts/fit_classification.py)
+  excellent: 0.0125
+  good: 0.04
+  inaccuracy: 0.08
+  mistake: 0.30
   # anything above `mistake` is a blunder
   great_gap: 0.15              # EP gap between engine line 1 and line 2
   great_exclude_recaptures: true
@@ -41,7 +42,8 @@ classification:
   brilliant_min_ep_after: 0.40 # not brilliant if the mover is worse than this after
   decided_threshold: 0.90      # EP at or above this = already completely winning (~ +6 pawns)
   miss_opponent_gain: 0.10     # opponent's error must have given me at least this
-  miss_given_back: 0.10        # and I gave back at least this without blundering
+  miss_given_back: 0.10        # and I gave back at least this
+  miss_includes_blunder: true  # a blunder-sized give-back also counts as a miss
 
 opening:
   polyglot_book: ""   # optional .bin book; adds to the built-in ECO book

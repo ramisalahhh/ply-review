@@ -1,9 +1,9 @@
 {
  "classification": {
-  "excellent": 0.02,
-  "good": 0.05,
-  "inaccuracy": 0.1,
-  "mistake": 0.2,
+  "excellent": 0.0125,
+  "good": 0.04,
+  "inaccuracy": 0.08,
+  "mistake": 0.3,
   "great_gap": 0.15,
   "great_exclude_recaptures": true,
   "brilliant_max_loss": 0.02,
@@ -11,7 +11,8 @@
   "brilliant_min_ep_after": 0.4,
   "decided_threshold": 0.9,
   "miss_opponent_gain": 0.1,
-  "miss_given_back": 0.1
+  "miss_given_back": 0.1,
+  "miss_includes_blunder": true
  },
  "accuracy": {
   "window_min": 2,

@@ -102,7 +102,8 @@ def classify_move(
             and not (c.great_exclude_recaptures and is_recapture(prev, p, board))):
         return Cls.GREAT, sac
 
-    if (prev is not None and base in (Cls.INACCURACY, Cls.MISTAKE)
+    missable = (Cls.INACCURACY, Cls.MISTAKE) + ((Cls.BLUNDER,) if c.miss_includes_blunder else ())
+    if (prev is not None and base in missable
             and prev.ep_loss >= c.miss_opponent_gain
             and p.ep_loss >= c.miss_given_back):
         return Cls.MISS, sac

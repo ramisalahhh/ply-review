@@ -728,8 +728,8 @@
     "brilliant": 0,
     "great": 1,
     "best": 4,
-    "excellent": 3,
-    "good": 0,
+    "excellent": 1,
+    "good": 2,
     "book": 4,
     "inaccuracy": 0,
     "mistake": 0,
@@ -1201,7 +1201,7 @@
      "mate": null
     },
     "white_ep_after": 0.6346718261450347,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 70.75988064535218,
     "sacrifice": 0,
     "clock": null
@@ -1435,7 +1435,7 @@
      "mate": null
     },
     "white_ep_after": 0.7579448072556428,
-    "classification": "excellent",
+    "classification": "good",
     "accuracy": 97.9814767800356,
     "sacrifice": 0,
     "clock": null
